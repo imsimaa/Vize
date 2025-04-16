@@ -1,0 +1,35 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def protein_bond_simulation(k, mass, x0, v0, dt, n_steps, temperature=300):
+    # Boltzmann sabiti (eV/K) ve termal hız dağılımı
+    kb = 8.617e-5  
+    v0 = np.sqrt(kb * temperature / mass) * np.random.normal()  
+    
+    x, v = x0, v0
+    positions, time = [], []
+    
+    for t in range(n_steps):
+        a = -k * x / mass  
+        x += v * dt + 0.5 * a * dt**2
+        a_new = -k * x / mass
+        v += 0.5 * (a + a_new) * dt
+        
+        positions.append(x)
+        time.append(t * dt)
+    
+    return time, positions
+
+# Simülasyon parametreleri (Protein C=O bağı)
+time, positions = protein_bond_simulation(
+    k=500, mass=12.0, x0=0.1, v0=0, dt=0.1, n_steps=5000
+)
+
+# Grafik
+plt.figure(figsize=(10, 6))
+plt.plot(time, positions, color='blue', linewidth=1)
+plt.xlabel('Zaman (fs)', fontsize=12)
+plt.ylabel('Bağ Uzunluğu (Å)', fontsize=12)
+plt.title('Protein Peptid Bağının Harmonik Titreşimi (300 K)', fontsize=14)
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.show()
